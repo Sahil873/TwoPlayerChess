@@ -4,17 +4,22 @@ const socket = require("socket.io");
 const http = require("http");
 const { Chess } = require("chess.js");
 const path = require("path");
+const dotenv = require("dotenv");
+
+dotenv.config();
+const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-const server = http.createServer(app); // socket requires a http server so we link the express server with http
-const io = socket(server); // everything that socket can do now io can do
+const server = http.createServer(app);
+const io = socket(server);
 
-const chess = new Chess(); // everything possible in chess rules etc
+const chess = new Chess();
 const players = {};
 let currentPlayer = "w";
 
 app.set("view engine", ejs);
+app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
@@ -22,11 +27,6 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (uniqueSocket) => {
-  //   console.log("socket connected");
-  //   uniqueSocket.on("churan", () => {
-  //     console.log("churan received");
-  //     io.emit("churanPapdi"); // to all
-  //   });
   console.log("connected");
 
   if (!players.white) {
@@ -52,18 +52,18 @@ io.on("connection", (uniqueSocket) => {
       if (chess.turn() === "w" && uniqueSocket.id !== players.white) return;
       if (chess.turn() === "b" && uniqueSocket.id !== players.black) return;
 
-      const result = chess.move(move); // move the unit if move is valid else throw an err
+      const result = chess.move(move);
       if (result) {
-        currentPlayer = chess.turn(); // get whose turn it is
+        currentPlayer = chess.turn();
         const checkmated = chess.isCheckmate(chess.fen());
         if (checkmated) {
           io.emit("checkmate", currentPlayer);
         }
-        io.emit("move", move); // emitted the valid move back to frontend
-        io.emit("boardState", chess.fen()); // fen return the state of the board what is present where
+        io.emit("move", move);
+        io.emit("boardState", chess.fen());
       } else {
         console.error("Invalid move : ", result);
-        uniqueSocket.emit("invalidMove", move); // sirf jisne move kiya usko bhenjo
+        uniqueSocket.emit("invalidMove", move);
       }
     } catch (err) {
       console.error(err);
@@ -72,6 +72,4 @@ io.on("connection", (uniqueSocket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("Listening on port 3000");
-});
+server.listen(PORT);
