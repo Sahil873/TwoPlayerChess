@@ -41,6 +41,6 @@ Welcome to the Chess Game Web Application! This project is a feature-rich, inter
 
 - **Join as a Player** : The first two users to connect will be assigned the roles of White and Black respectively.
 - **Spectate the Game**: Additional users will be assigned the role of Spectator and can watch the game.
-- ** Make Moves** : Drag and drop pieces to make moves. Valid moves will be broadcasted to all users.
-- ** Chat** : Use the chat box to communicate with other players and spectators.
-- ** Game Over** : Alerts will be shown for game over conditions.
+- **Make Moves** : Drag and drop pieces to make moves. Valid moves will be broadcasted to all users.
+- **Chat** : Use the chat box to communicate with other players and spectators.
+- **Game Over** : Alerts will be shown for game over conditions.
