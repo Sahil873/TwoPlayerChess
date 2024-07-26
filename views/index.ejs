@@ -8,8 +8,40 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
-    <div class="w-full h-screen bg-zinc-900 grid place-content-center">
-      <div class="chessboard"></div>
+    <div
+      class="w-full h-screen bg-zinc-900 grid grid-cols-3 place-content-center"
+    >
+      <div class="ml-24 max-h-[100%] flex flex-col">
+        <div
+          id="message-box"
+          class="h-[22.5rem] flex flex-col mt-auto overflow-y-auto"
+        ></div>
+        <div class="flex">
+          <input
+            id="message-input"
+            type="text"
+            placeholder="enter message"
+            class="w-full border border-[#f0d9b5] pl-2 focus:outline-none"
+          />
+          <button
+            onclick="sendMessage()"
+            class="bg-[#f0d9b5] px-4 py-2 text-black focus:outline-none"
+          >
+            SEND
+          </button>
+        </div>
+      </div>
+      <div class="chessboard mx-auto"></div>
+      <div id="tray" class="flex flex-col justify-between mr-24">
+        <div
+          id="blackTray"
+          class="w-full h-24 grid grid-cols-8 grid-rows-2 place-items-center bg-[#b58863]"
+        ></div>
+        <div
+          id="whiteTray"
+          class="w-full h-24 grid grid-cols-8 grid-rows-2 place-items-center bg-[#b58863]"
+        ></div>
+      </div>
     </div>
 
     <script

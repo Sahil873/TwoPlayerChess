@@ -52,3 +52,36 @@
 .flipped .piece {
   transform: rotate(180deg);
 }
+
+.trayflipped {
+  transform: rotateX(180deg);
+}
+
+.chat {
+  background-color: #b58863;
+  padding: 0.5rem;
+  border-bottom: 2px solid white;
+}
+
+#message-box > :first-child {
+  margin-top: auto !important;
+}
+
+#message-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+#message-box::-webkit-scrollbar-track {
+  background: #b58863;
+  border-left: 2px solid white;
+  border-right: 2px solid white;
+}
+
+#message-box::-webkit-scrollbar-thumb {
+  background: #f0d9b5;
+  border: 2px solid white;
+}
+
+#message-box::-webkit-scrollbar-thumb:hover {
+  cursor: pointer;
+}

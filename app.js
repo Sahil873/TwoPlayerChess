@@ -4,13 +4,8 @@ const socket = require("socket.io");
 const http = require("http");
 const { Chess } = require("chess.js");
 const path = require("path");
-const dotenv = require("dotenv");
-
-dotenv.config();
-const PORT = process.env.PORT || 3000;
 
 const app = express();
-
 const server = http.createServer(app);
 const io = socket(server);
 
@@ -18,17 +13,15 @@ const chess = new Chess();
 const players = {};
 let currentPlayer = "w";
 
-app.set("view engine", ejs);
+app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
-  res.render("index.ejs", { title: "Chess Game" });
+  res.render("index", { title: "Chess Game" });
 });
 
 io.on("connection", (uniqueSocket) => {
-  console.log("connected");
-
   if (!players.white) {
     players.white = uniqueSocket.id;
     uniqueSocket.emit("playerRole", "w");
@@ -39,12 +32,13 @@ io.on("connection", (uniqueSocket) => {
     uniqueSocket.emit("spectatorRole");
   }
 
+  uniqueSocket.on("message", (data) => {
+    io.emit("received-message", { ...data });
+  });
+
   uniqueSocket.on("disconnect", () => {
-    if (uniqueSocket.id === players.white) {
-      delete players.white;
-    } else if (uniqueSocket.id === players.black) {
-      delete players.black;
-    }
+    if (uniqueSocket.id === players.white) delete players.white;
+    else if (uniqueSocket.id === players.black) delete players.black;
   });
 
   uniqueSocket.on("move", (move) => {
@@ -55,21 +49,40 @@ io.on("connection", (uniqueSocket) => {
       const result = chess.move(move);
       if (result) {
         currentPlayer = chess.turn();
-        const checkmated = chess.isCheckmate(chess.fen());
-        if (checkmated) {
-          io.emit("checkmate", currentPlayer);
-        }
+        if (result.captured)
+          io.emit("capture", {
+            color: result.color,
+            captured: result.captured,
+          });
+
         io.emit("move", move);
         io.emit("boardState", chess.fen());
+
+        // Check for checkmate, stalemate, and draw conditions
+        if (chess.isCheckmate()) {
+          io.emit("gameOver", {
+            winner: result.color === "w" ? "White" : "Black",
+            reason: "Checkmate",
+          });
+        } else if (chess.isStalemate()) {
+          io.emit("gameOver", { winner: null, reason: "Stalemate" });
+        } else if (chess.isDraw()) {
+          io.emit("gameOver", { winner: null, reason: "Draw" });
+        } else if (chess.isThreefoldRepetition()) {
+          io.emit("gameOver", { winner: null, reason: "Threefold Repetition" });
+        } else if (chess.isInsufficientMaterial()) {
+          io.emit("gameOver", {
+            winner: null,
+            reason: "Insufficient Material",
+          });
+        }
       } else {
-        console.error("Invalid move : ", result);
         uniqueSocket.emit("invalidMove", move);
       }
     } catch (err) {
-      console.error(err);
       uniqueSocket.emit("invalidMoveCatch", move);
     }
   });
 });
 
-server.listen(PORT);
+server.listen(3000);
