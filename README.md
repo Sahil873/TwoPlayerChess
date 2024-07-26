@@ -23,19 +23,19 @@ Welcome to the Chess Game Web Application! This project is a feature-rich, inter
 
 ## Installation
 
-    1. Clone the repository
-    ```cmd
-        git clone https://github.com/Sahil873/TwoPlayerChess.git
-        cd TwoPlayerChess
-    ```
-    2. Install Dependencies
-    ```cmd
-    npm install
-    ```
-    3. Run the application
-    ```cmd
-    npm run dev
-    ```
+1. Clone the repository
+   ```cmd
+       git clone https://github.com/Sahil873/TwoPlayerChess.git
+       cd TwoPlayerChess
+   ```
+2. Install Dependencies
+   ```cmd
+   npm install
+   ```
+3. Run the application
+   ```cmd
+   npm run dev
+   ```
 
 ## Usage
 
