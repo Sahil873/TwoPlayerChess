@@ -27,9 +27,12 @@ window.addEventListener("keydown", function (e) {
 });
 
 const sendMessage = () => {
-  socket.emit("message", { playerRole, message: inputMessage.value });
-  inputMessage.value = "";
-  inputMessage.focus();
+  const message = inputMessage.value.trim();
+  if (message) {
+    socket.emit("message", { playerRole, message: inputMessage.value });
+    inputMessage.value = "";
+    inputMessage.focus();
+  }
 };
 
 const renderBoard = () => {
